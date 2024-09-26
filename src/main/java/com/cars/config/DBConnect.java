@@ -6,19 +6,25 @@ import java.sql.SQLException;
 
 public class DBConnect {
     
-    DBConfig dbConfig = new DBConfig(
-        "jdbc:mysql://localhost:3306/cars",
-        "root",
-        ""
-    );
+    public DBConfig dbConfig;
+
+    public DBConnect() {
+        this.dbConfig = new DBConfig(
+            "jdbc:mariadb://localhost:3306/garage",
+            "root",
+            ""
+        );
+    }
 
     public Connection connect() {
         Connection connection = null;
         try {
-            Class.forName("org.mariadb.jdbc.Driver");
-        } catch (Exception e) {
-            // TODO: handle exception
+            // Load MySQL JDBC driver
+            Class.forName("org.mariadb.jdbc.Driver"); // Use MySQL driver
+        } catch (ClassNotFoundException e) {
+            System.err.println("JDBC Driver not found.");
             e.printStackTrace();
+            return null;
         }
         
         try {
@@ -28,13 +34,13 @@ public class DBConnect {
                 dbConfig.password
             );
         } catch (SQLException e) {
+            System.err.println("Connection failed.");
             e.printStackTrace();
         }
         
         if (connection == null) {
             System.out.println("Failed to connect to the database");
         }
-
 
         return connection;
     }
